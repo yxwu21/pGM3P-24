@@ -1,0 +1,20 @@
+python bench_simulate.py \
+    --md-config.output-dir /home/yxwu/pGM_water_model/Bench_MD_data/wat-{WAT_NUM}/{THERMOSTAT}_{BAROSTAT}-{TEMP0}/{PIPELINE_NAME} \
+    --md-config.case case_1 \
+    --md-config.md-lengths {MD_LENGTHS} \
+    --md-config.use-custom-case-folder-name \
+    --md-config.custom-case-folder-name {WAT_MODEL} \
+    --md-config.thermostat {THERMOSTAT} \
+    --md-config.barostat {BAROSTAT} \
+    --md-config.pipeline-name {PIPELINE_NAME} \
+    --md-config.gamma-lns {GAMMA_LNS} \
+    --md-config.temp0 {TEMP0} \
+    --md-config.wat-model {WAT_MODEL} \
+    --md-config.wat-num {WAT_NUM} \
+    --slurm.mode debug \
+    --slurm.slurm-job-name {WAT_MODEL}-{TEMP0} \
+    --slurm.slurm-partition "cpu" \
+    --slurm.slurm-output-folder "/home/yxwu/pGM_water_model/Bench_MD_data/wat-{WAT_NUM}/{THERMOSTAT}_{BAROSTAT}-{TEMP0}/{PIPELINE_NAME}/{WAT_MODEL}/slurm" \
+    --slurm.tasks-per-node 1 \
+    --slurm.cpus-per-task 4 \
+    --slurm.mem 1G

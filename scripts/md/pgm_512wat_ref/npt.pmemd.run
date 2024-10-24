@@ -1,0 +1,115 @@
+#!/bin/bash
+
+#SBATCH --job-name=ALDH
+#SBATCH --output=res_%j.out
+#SBATCH --error=res_%j.err
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=4
+#SBATCH --exclusive
+
+###SBATCH --nodelist=gpu-0-1
+###SBATCH --exclude=gpu-0-7,gpu-1-[0-9],gpu-2-[0-4]
+
+#########################################
+# Macro setting for experiment related things
+exp_name=$1
+file_name=$2
+cwrk=$3
+output_dir_name=$4
+nstlim=$5
+
+echo "********************************************************************************"
+echo "Current experiment setting:"
+echo "exp_name=$exp_name"
+echo "file_name=$file_name"
+echo "cwrk=$cwrk"
+echo "output_dir_name=$output_dir_name"
+echo "nstlim=$nstlim"
+echo "********************************************************************************"
+
+#########################################
+# Set the AMBER ENV variables
+
+source /home/apps/amber22/amber.sh
+# source /home/apps/amber23/amber.sh
+export PATH=/home/apps/gcc/9.5.0/bin:$PATH
+export LD_LIBRARY_PATH=/home/apps/gcc/9.5.0/lib64:$LD_LIBRARY_PATH
+# export LD_LIBRARY_PATH=/home/apps/cuda-11.7/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/home/apps/cuda-12.1/lib64:$LD_LIBRARY_PATH
+export PATH=/home/apps/openmpi/4.1.5/bin:$PATH
+
+# AMBERHOME=/home/apps/amber22
+AMBERHOME=/home/apps/amber23
+
+echo "AMBERHOME=$AMBERHOME"
+echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+echo "HOSTNAME=$HOSTNAME"
+
+# Set the working directory
+echo "Entering Working Directory"
+#$ -cwd
+
+# Set location of your original working directory
+# current location of 01_min
+echo $cwrk
+cd $cwrk
+
+#########################################
+# Set the MD engine
+exe=$AMBERHOME/bin/pmemd-pgm
+
+#########################################
+prefix=$file_name.npt.pmemd
+parmfile=$cwrk/prep_files/${file_name}.prmtop
+coordfile=$cwrk/prep_files/${file_name}.restrt0
+
+# Create experiment running output dir
+mkdir $output_dir_name
+cd $output_dir_name
+
+echo "Current Working Directory"
+echo `pwd`
+
+cat > mdin <<EOF
+  single point calc.
+ &cntrl
+   imin=0, nstlim=$nstlim,
+   irest=1, ntx=5,
+   ntt=1, temp0=300,
+   ntb=2,
+   ntp=1,
+   ntc=2, ntf=2, tol=0.000001,
+   cut=9.,
+   ntpr=1, ntwr=1000, ntwx=1000,
+   dt=0.001,
+   ipgm=1,
+ /
+ &ewald
+  skinnb=2.,ew_coeff=0.4,nfft1=50,nfft2=50,nfft3=50,order=8,vdwmeth=0
+ /
+ &pol_gauss
+   pol_gauss_verbose=0,ee_dsum_cut=9.0,
+   dipole_scf_tol=0.01,dipole_scf_init=3,dipole_scf_init_order=3,dipole_scf_init_step=2,
+   scf_solv_opt=3,scf_sor_niter=100,scf_sor_coefficient=0.65,
+   scf_cg_niter=50,scf_local_niter=3,scf_local_cut=4.0
+ /
+EOF
+
+echo "$exe -O -o ${prefix}.out \
+      -r ${prefix}.rst \
+      -c $coordfile \
+      -i $inputfile \
+      -p $parmfile \
+      -ref $coordfile \
+      -x $prefix.nc"
+
+$exe -O -o ${prefix}.out \
+      -r ${prefix}.rst \
+      -c $coordfile \
+      -i mdin \
+      -p $parmfile \
+      -ref $coordfile \
+      -x $prefix.nc
+
+####################################
+echo "Local job completed"

@@ -1,0 +1,14 @@
+python rst_simulation_temp_dipole.py \
+    --md-path "{FOLDER_PATH}/MD" \
+    --input_dir_name {INPUT_DIR_NAME} \
+    --md-length {MD_LENGTH} \
+    --temp0 {TEMP0} \
+    --last-executable {LAST_EXECUTABLE} \
+    --dipole-print-interval {DIPOLE_PRINT_INTERVAL} \
+    --slurm.mode slurm \
+    --slurm.slurm-job-name {WANDB_NAME}-{TEMP0} \
+    --slurm.slurm-partition "cpu" \
+    --slurm.slurm-output-folder "{FOLDER_PATH}/slurm" \
+    --slurm.tasks-per-node 1 \
+    --slurm.cpus-per-task 2 \
+    --slurm.mem 1G

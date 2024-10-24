@@ -1,0 +1,9 @@
+parm ../MD/prep_files/case_1_pgm_512wat.prmtop
+
+trajin ../MD/1a-10ps_output_ntt3_gamma100_skinnb1_nvt/case_1_pgm_512wat.nvt.sander.nc
+trajin ../MD/1b-10ps_output_ntt3_gamma100_skinnb1_npt-rst_10ps_output_ntt3_gamma100_skinnb1_nvt/case_1_pgm_512wat.nvt.sander.nc
+trajin ../MD/1c-100ps_output_ntt3_gamma100_skinnb1_npt-rst_10ps_output_ntt3_gamma100_skinnb1_npt/case_1_pgm_512wat.nvt.sander.nc
+
+radial out rdf_goo.out 0.02 9.0 @O
+go
+quit

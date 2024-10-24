@@ -1,0 +1,165 @@
+#!/bin/bash
+
+#SBATCH --job-name=ALDH
+#SBATCH --output=res_%j.out
+#SBATCH --error=res_%j.err
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=16
+###SBATCH --exclusive
+#SBATCH --mem=1G
+
+###SBATCH --nodelist=gpu-0-1
+###SBATCH --exclude=gpu-0-7,gpu-1-[0-9],gpu-2-[0-4]
+###SBATCH --exclude=gpu-0-[0-9]
+
+#########################################
+# Macro setting for experiment related things
+exp_name=$1
+file_name=$2
+cwrk=$3
+output_dir_name=$4
+temp0=$5
+min_iter=$6
+max_iter=$7
+coordfile=$8
+
+
+echo "********************************************************************************"
+echo "Current experiment setting:"
+echo "exp_name=$exp_name"
+echo "file_name=$file_name"
+echo "cwrk=$cwrk"
+echo "output_dir_name=$output_dir_name"
+echo "temp0=$temp0"
+echo "min_iter=$min_iter"
+echo "max_iter=$max_iter"
+echo "coordfile"=$coordfile
+echo "********************************************************************************"
+
+
+#########################################
+# Set the AMBER ENV variables
+
+source /home8/yxwu/AMBER/bin/pmemd-install.dipole/amber.sh
+export PATH=/home8/yxwu/apps/bin/gcc-11.3.0/bin:$PATH
+export LD_LIBRARY_PATH=/home8/yxwu/apps/bin/gcc-11.3.0/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/home8/yxwu/apps/bin/cuda-12.2.1/lib64:$LD_LIBRARY_PATH
+export PATH=/home8/yxwu/apps/bin/openmpi-4.1.5/bin:$PATH
+
+AMBERHOME=/home8/yxwu/AMBER/bin/pmemd-install.dipole
+
+# export PATH=/home8/larry/apps/openmpi/3.1.6/bin/:$PATH
+# export LD_LIBRARY_PATH=/home8/larry/apps/openmpi/3.1.6/lib/:$LD_LIBRARY_PATH
+
+# AMBERHOME=/home8/larry/sander
+
+
+echo "AMBERHOME=$AMBERHOME"
+echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+echo "HOSTNAME=$HOSTNAME"
+
+echo "--------------------------------------------------------------------------------"
+# Set the working directory
+echo "Entering Working Directory"
+#$ -cwd
+
+# Set location of your original working directory
+# current location of 01_min
+echo $cwrk
+cd $cwrk
+
+#########################################
+# Set the MD engine
+exe=$AMBERHOME/bin/pmemd.MPI
+# exe=$AMBERHOME/bin/sander.MPI
+
+DO_PARALLEL="mpirun -np 8 --oversubscribe"
+
+#########################################
+prefix=$file_name.npt.pmemd
+parmfile=$cwrk/prep_files/${file_name}.prmtop
+# coordfile=$cwrk/prep_files/${file_name}.restrt0
+
+echo "--------------------------------------------------------------------------------"
+echo "input files:"
+echo "parmfile = $parmfile"
+echo "coordfile = $coordfile"
+echo "--------------------------------------------------------------------------------"
+
+# Create experiment running output dir
+# mkdir $output_dir_name
+cd $output_dir_name
+
+echo "Current Working Directory"
+echo `pwd`
+
+cat > mdin <<EOF
+ single point calc.
+ &cntrl
+   imin=0, nstlim=600,ig=-1,
+   irest=1, ntx=5,
+   ntt=3, temp0=$temp0,gamma_ln=1.0,
+   ntb=2, ntp=1,barostat=2,mcbarint=25,
+   ntc=2, ntf=2, tol=0.000001,
+   cut=6.0,
+   ntpr=10000, ntwr=10000, ntwx=10000,
+   dt=0.001,
+ /
+ &ewald
+  skinnb=1.,ew_coeff=0.4,nfft1=50,nfft2=50,nfft3=50,order=6,vdwmeth=0
+ /
+EOF
+
+echo "--------------------------------------------------------------------------------"
+echo "cmd:"
+echo "$exe -O -o ${prefix}.out \
+      -r ${prefix}.rst \
+      -c $coordfile \
+      -i mdin \
+      -p $parmfile \
+      -ref $coordfile \
+      -x $prefix.nc"
+echo "--------------------------------------------------------------------------------"
+
+
+# Ensure min_iter and max_iter are set
+min_iter=${min_iter:-1}  # default to 1 if not set
+max_iter=${max_max:-10}  # default to 10 if not set
+
+cnt=$min_iter
+cntmax=$max_iter
+
+while [ "$cnt" -le "$cntmax" ]; do
+    pcnt=$(expr "$cnt" - 1)
+    if [ "$cnt" -eq "$min_iter" ]; then
+        # coordfile="${cwrk}/2_Equi/${file_name}.npt.sander.rst"
+        coordfile=$coordfile
+    else
+        coordfile="${file_name}.npt.pmemd.$(printf "%02d" "$pcnt").rst"
+    fi
+
+    $DO_PARALLEL $exe -O -o "${prefix}.$(printf "%02d" "$cnt").out" \
+          -r "${prefix}.$(printf "%02d" "$cnt").rst" \
+          -c "$coordfile" \
+          -i mdin \
+          -p "$parmfile" \
+          -ref "$coordfile" \
+          -x "${prefix}.$(printf "%02d" "$cnt").nc"
+
+    if [ -f fort.101 ]; then
+        mv fort.101 "fort.101_${cnt}"
+    fi
+    if [ -f fort.100 ]; then
+        mv fort.100 "fort.100_${cnt}"
+    fi
+    if [ -f fort.200 ]; then
+        mv fort.200 "fort.200_${cnt}"
+    fi
+
+    cnt=$((cnt + 1))
+done
+
+####################################
+echo "Local job completed"
+echo `date`
+exit

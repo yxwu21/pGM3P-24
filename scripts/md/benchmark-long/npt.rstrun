@@ -1,0 +1,138 @@
+#!/bin/bash
+
+#SBATCH --job-name=ALDH
+#SBATCH --output=res_%j.out
+#SBATCH --error=res_%j.err
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=4
+#SBATCH --exclusive
+
+###SBATCH --nodelist=gpu-0-1
+###SBATCH --exclude=gpu-0-7,gpu-1-[0-9],gpu-2-[0-4]
+###SBATCH --exclude=gpu-0-[0-9]
+
+#########################################
+# Macro setting for experiment related things
+exp_name=$1
+file_name=$2
+cwrk=$3
+output_dir_name=$4
+exe=$5
+temp0=$6
+input_dir_name=$7
+last_ensemble=$8
+last_executable=$9
+
+
+echo "********************************************************************************"
+echo "Current experiment setting:"
+echo "exp_name=$exp_name"
+echo "file_name=$file_name"
+echo "cwrk=$cwrk"
+echo "output_dir_name=$output_dir_name"
+echo "exe=$exe"
+echo "temp0=$temp0"
+echo "input_dir_name=$input_dir_name"
+echo "last_ensemble=$last_ensemble"
+echo "last_executable=$last_executable"
+echo "********************************************************************************"
+
+#########################################
+# Set the AMBER ENV variables
+
+source /home8/yxwu/AMBER/bin/pmemd-install.dipole/amber.sh
+export PATH=/home8/yxwu/apps/bin/gcc-11.3.0/bin:$PATH
+export LD_LIBRARY_PATH=/home8/yxwu/apps/bin/gcc-11.3.0/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/home8/yxwu/apps/bin/cuda-12.2.1/lib64:$LD_LIBRARY_PATH
+export PATH=/home8/yxwu/apps/bin/openmpi-4.1.5/bin:$PATH
+
+AMBERHOME=/home8/yxwu/AMBER/bin/pmemd-install.dipole
+
+echo "AMBERHOME=$AMBERHOME"
+echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+echo "HOSTNAME=$HOSTNAME"
+
+echo "--------------------------------------------------------------------------------"
+# Set the working directory
+echo "Entering Working Directory"
+#$ -cwd
+
+# Set location of your original working directory
+# current location of 01_min
+echo $cwrk
+cd $cwrk
+
+#########################################
+# Set the MD engine
+exe=$AMBERHOME/bin/$exe.MPI
+
+DO_PARALLEL="mpirun -np ${num_pro} --oversubscribe"
+
+#########################################
+prefix=$file_name.npt.$exe
+parmfile=$cwrk/prep_files/${file_name}.prmtop
+coordfile=$cwrk/$input_dir_name/$file_name.$last_ensemble.$last_executable.rst
+
+echo "--------------------------------------------------------------------------------"
+echo "input files:"
+echo "parmfile = $parmfile"
+echo "coordfile = $coordfile"
+echo "--------------------------------------------------------------------------------"
+
+# Create experiment running output dir
+# mkdir $output_dir_name
+cd $output_dir_name
+
+echo "Current Working Directory"
+echo `pwd`
+
+cat > mdin <<EOF
+  single point calc.
+ &cntrl
+   imin=0,
+   nstlim=200000,
+   irest=1,
+   ntx=5,
+   ntt=3,
+   temp0=$temp0,
+   gamma_ln=0,
+   ntc=2,
+   ntf=2,
+   cut=9.0,
+   ntpr=10000,
+   ntwr=10000,
+   ntwx=10000,
+   dt=0.001,
+   barostat=1,
+   ntb=2,
+   ntp=1,
+   tol=0.000001,
+ /
+ &ewald
+  skinnb=1.,ew_coeff=0.4,nfft1=50,nfft2=50,nfft3=50,order=8,vdwmeth=0
+ /
+EOF
+
+echo "--------------------------------------------------------------------------------"
+echo "cmd:"
+echo "$exe -O -o ${prefix}.out \
+      -r ${prefix}.rst \
+      -c $coordfile \
+      -i $inputfile \
+      -p $parmfile \
+      -ref $coordfile \
+      -x $prefix.nc"
+echo "--------------------------------------------------------------------------------"
+
+$DO_PARALLEL $exe -O -o ${prefix}.out \
+      -r ${prefix}.rst \
+      -c $coordfile \
+      -i mdin \
+      -p $parmfile \
+      -ref $coordfile \
+      -x $prefix.nc
+
+####################################
+echo "Local job completed"
+echo `date`
+exit

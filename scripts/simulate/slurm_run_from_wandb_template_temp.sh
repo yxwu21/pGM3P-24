@@ -1,0 +1,22 @@
+python temp_simulate.py \
+    --md-param-key {WANDB_LOG_NAME} \
+    --md-param-step {LOG_STEP} \
+    --directory-path "/home8/yxwu/pGM_water_model/wandb_data/{WANDB_LOG_NAME}" \
+    --md-config.output-dir /home8/yxwu/pGM_water_model/{MD_DATA_FOLDER}/{THERMOSTAT}_{BAROSTAT}-{TEMP0}/{PIPELINE_NAME} \
+    --md-config.case case_1 \
+    --md-config.md-lengths {MD_LENGTHS} \
+    --md-config.use-custom-case-folder-name \
+    --md-config.custom-case-folder-name {WANDB_LOG_NAME}_{LOG_STEP} \
+    --md-config.thermostat {THERMOSTAT} \
+    --md-config.barostat {BAROSTAT} \
+    --md-config.pipeline-name {PIPELINE_NAME} \
+    --md-config.gamma-lns {GAMMA_LNS} \
+    --md-config.temp0 {TEMP0} \
+    --md-config.file-name {FILE_NAME} \
+    --slurm.mode slurm \
+    --slurm.slurm-job-name {WANDB_LOG_NAME}_{LOG_STEP}-{TEMP0}-{MD_DATA_FOLDER} \
+    --slurm.slurm-partition "cpu" \
+    --slurm.slurm-output-folder "/home8/yxwu/pGM_water_model/{MD_DATA_FOLDER}/{THERMOSTAT}_{BAROSTAT}-{TEMP0}/{PIPELINE_NAME}/{WANDB_LOG_NAME}_{LOG_STEP}/slurm" \
+    --slurm.tasks-per-node 1 \
+    --slurm.cpus-per-task 2 \
+    --slurm.mem 1G

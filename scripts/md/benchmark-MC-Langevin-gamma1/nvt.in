@@ -1,0 +1,26 @@
+  single point calc.
+ &cntrl
+   imin=0,
+   nstlim=10000,
+   irest=1,
+   ntx=5,
+   ntt=3,
+   temp0=298,
+   gamma_ln=100,
+   ntc=2,
+   ntf=2,
+   cut=9.0,
+   ntpr=10000,
+   ntwr=10000,
+   ntwx=10000,
+   dt=0.001,
+   ipgm=0,
+   barostat=1,
+   ntb=1,
+   ntp=0,
+   ig=1,
+   tol=0.000001,
+ /
+ &ewald
+  skinnb=1.,ew_coeff=0.4,nfft1=50,nfft2=50,nfft3=50,order=8,vdwmeth=0
+ /

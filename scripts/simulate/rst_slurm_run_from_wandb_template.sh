@@ -1,0 +1,11 @@
+python rst_simulation.py \
+    --md-path "{FOLDER_PATH}/MD" \
+    --input_dir_name {INPUT_DIR_NAME} \
+    --md-length {MD_LENGTH} \
+    --slurm.mode slurm \
+    --slurm.slurm-job-name {WANDB_NAME} \
+    --slurm.slurm-partition "cpu" \
+    --slurm.slurm-output-folder "{FOLDER_PATH}/slurm" \
+    --slurm.tasks-per-node 1 \
+    --slurm.cpus-per-task 2 \
+    --slurm.mem 1G

@@ -1,0 +1,11 @@
+python old_analysis.py \
+    --md-path "{FOLDER_PATH}/MD" \
+    --analysis-type {ANALYSIS_TYPE} \
+    --traj-range {TRAJ_RANGE} \
+    --slurm.mode local \
+    --slurm.slurm-job-name {WANDB_NAME} \
+    --slurm.slurm-partition "cpu" \
+    --slurm.slurm-output-folder "{FOLDER_PATH}/slurm" \
+    --slurm.tasks-per-node 1 \
+    --slurm.cpus-per-task 2 \
+    --slurm.mem 1G
