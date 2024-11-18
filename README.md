@@ -1,4 +1,4 @@
-# <h1 align="center"><strong>pGM-Tri24</strong></h1>
+<h1 align="center"><strong>pGM-Tri24</strong></h1>
 
 The source code for the paper "Automated Refinement of Property-Specific Polarizable Gaussian Multipole Water Models Using Bayesian Black Box Optimization".
 
