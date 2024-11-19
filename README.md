@@ -12,7 +12,7 @@ Our code is implemented using SMAC, and all experiments are executed through the
 | vdW B (kcal/mol * $\AA^6$)         | 600.4123381041812    |
 | $\sigma_{LJ}$ ($\AA$)         | 3.1815599649844395   |
 | $\epsilon_{LJ}$ (kJ/mol)       | 0.1447267928698027   |
-| $r_{min}$ (\AA)         | 3.5711803151155306   |
+| $r_{min}$ ($\AA$)         | 3.5711803151155306   |
 
 | Polarizable Parameter   | O       | H    |
 |-------------|--------------------|-------------|
