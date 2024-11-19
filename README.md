@@ -1,8 +1,10 @@
-<h1 align="center"><strong>pGM-Tri24</strong></h1>
+<h1 align="center"><strong>pGM3P-24</strong></h1>
 
 The source code for the paper "Automated Refinement of Property-Specific Polarizable Gaussian Multipole Water Models
 Using Bayesian Black Box Optimization".
 Our code is implemented using SMAC, and all experiments are executed through the cluster job scheduler slurm.
+
+## pGM3P-24 Water Model Parameters
 
 | Parameters   | pGM3P-24              |
 |-------------|--------------------|
