@@ -13,13 +13,16 @@ Our code is implemented using SMAC, and all experiments are executed through the
 | $\sigma_{LJ}$ ($Å$)         | 3.1815599649844395   |
 | $\epsilon_{LJ}$ (kJ/mol)       | 0.1447267928698027   |
 | $r_{min}$ ($Å$)         | 3.5711803151155306   |
+| $l_{OH}$ ($Å$)         | 0.9745   |
+| $\Theta_{HOH}$ [$\degree$]         | 103.64   |
 
 | Polarizable Parameter   | O       | H    |
 |-------------|--------------------|-------------|
-| Charge ($a.u.$)       | -2.040562217277963 | 1.020281087271829 |
-| Permenent Dipole moment ($a.u.$)       | -0.3613181603107004 | 0.16228405747594296 |
+| Charge ($e$)       | -0.11198159492917815 | 0.05599079629200645 |
 | Polarizability ($a.u.^3$)     | 7.542285365436364 | 2.2244581584935808 |
 | Gaussian radius ($a.u.$)     | 1.1435691447610588 | 1.0133299506847484 |
+|        | **O $\rightarrow$ H** | **H $\rightarrow$ O** |
+| Permenent Dipole moment ($a.u.$)       | -0.3613181603107004 | 0.16228405747594296 |
 
 
 ## File Structures
