@@ -12,7 +12,7 @@ Our code is implemented using SMAC, and all experiments are executed through the
 - `run.py`: run automated machine learning based searching
 - `./*.py`: figure plots
 
-To see all configurable options, run
+To view all configurable options, run
 
 ```bash
 python run.py -h
