@@ -4,13 +4,22 @@ The source code for the paper "Automated Refinement of Property-Specific Polariz
 Using Bayesian Black Box Optimization".
 Our code is implemented using SMAC, and all experiments are executed through the cluster job scheduler slurm.
 
-## pGM3P-24 Polarizable Parameters
+## pGM3P-24 Water Model Parameters
 
-| Parameters   | O       | H    |
+| Parameter     | pGM3P-24                |
+|---------------|----------------------|
+| vdW A (kcal/mol * $\AA^{12}$)         | 622716.375799251     |
+| vdW B (kcal/mol * $\AA^6$)         | 600.4123381041812    |
+| $\sigma_{LJ}$ ($\AA$)         | 3.1815599649844395   |
+| $\epsilon_{LJ}$ (kJ/mol)       | 0.1447267928698027   |
+| $r_{min}$ (\AA)         | 3.5711803151155306   |
+
+| Polarizable Parameter   | O       | H    |
 |-------------|--------------------|-------------|
-| Permenent Dipole moment ($e$ ∙ $\AA$)       | -0.3613181603107004 | 0.16228405747594296 |
-| Polarizability ($\AA^3$)     | 7.542285365436364 | 2.2244581584935808 |
-| Gaussian radius ($\AA$)     | 1.1435691447610588 | 1.0133299506847484 |
+| Charge ($a.u.$)       | -2.040562217277963 | 1.020281087271829 |
+| Permenent Dipole moment ($a.u.$)       | -0.3613181603107004 | 0.16228405747594296 |
+| Polarizability ($a.u.^3$)     | 7.542285365436364 | 2.2244581584935808 |
+| Gaussian radius ($a.u.$)     | 1.1435691447610588 | 1.0133299506847484 |
 
 
 ## File Structures
