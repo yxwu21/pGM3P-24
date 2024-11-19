@@ -4,19 +4,14 @@ The source code for the paper "Automated Refinement of Property-Specific Polariz
 Using Bayesian Black Box Optimization".
 Our code is implemented using SMAC, and all experiments are executed through the cluster job scheduler slurm.
 
-## pGM3P-24 Water Model Parameters
+## pGM3P-24 Polarizable Parameters
 
-| Parameters   | pGM3P-24              |
-|-------------|--------------------|
-| vdw_a       | 622716.375799251  |
-| vdw_b       | 600.4123381041812 |
-| scale_q     | 1.0683576293005586 |
-| scale_p     | 0.7762292363437578 |
-| scale_pol   | 0.7713367864674853 |
-| scale_rad   | 0.7502257723289764 |
-| sigma       | 3.1815599649844395 |
-| epsilon     | 0.1447267928698027 |
-| r_min       | 3.5711803151155306 |
+| Parameters   | O       | H    |
+|-------------|--------------------|-------------|
+| Permenent Dipole moment ($e$ ∙ $\AA$)       | -0.3613181603107004 | 0.16228405747594296 |
+| Polarizability ($\AA^3$)     | 7.542285365436364 | 2.2244581584935808 |
+| Gaussian radius ($\AA$)     | 1.1435691447610588 | 1.0133299506847484 |
+
 
 ## File Structures
 
